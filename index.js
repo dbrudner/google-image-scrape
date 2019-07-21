@@ -3,9 +3,9 @@ const puppeteer = require("puppeteer");
 module.exports = class Scraperizer {
 	/**
 	 *
+	 * @constructor
 	 * @param {string} searchTerm string to search goog images by
 	 * @param {Object} [puppeteerSettings] object of puppeteer settings
-	 * @constructor
 	 */
 	constructor(searchTerm, puppeteerSettings = {}) {
 		if (!searchTerm) {
@@ -18,10 +18,10 @@ module.exports = class Scraperizer {
 
 	/**
 	 *
+	 * @private
 	 * @param {number} max
 	 * @param {number} [offset]
 	 * @returns {number} a random num given the params
-	 * @private
 	 */
 	randomNum(max, offset = 0) {
 		return Math.floor(Math.random() * max) + offset;
@@ -36,8 +36,8 @@ module.exports = class Scraperizer {
 
 	/**
 	 * runs puppeteer
-	 * @returns {Promise<string[]>} a promise that resolves to either a url string or an array of url strings
 	 * @private
+	 * @returns {Promise<string[]>} a promise that resolves to either a url string or an array of url strings
 	 */
 	async gather() {
 		const browser = await puppeteer.launch(this.puppeteerSettings);
@@ -76,9 +76,9 @@ module.exports = class Scraperizer {
 
 	/**
 	 *
+	 * @private
 	 * @param {string[]} urlList self-explanatory
 	 * @param {boolean} [includeBase64] option to include base-64 strings in results
-	 * @private
 	 */
 	filterList(urlList, includeBase64) {
 		// ternaries are for savages
