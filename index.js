@@ -28,13 +28,13 @@ module.exports = class Scraperizer {
 	get url() {
 		return `https://www.google.com/search?q=${this.searchTerm.replace(
 			" ",
-			"+",
+			"+"
 		)}&tbm=isch`;
 	}
 
 	/**
 	 * runs puppeteer
-	 * @returns a promise that resolves to an array of succesfully scraped imgs
+	 * @returns {Promise<string[]>} a promise that resolves to either a url string or an array of url strings
 	 * @private
 	 */
 	async gather() {
@@ -55,7 +55,7 @@ module.exports = class Scraperizer {
 		const res = await page.evaluate(searchTerm => {
 			// Querying by alt seems most reliable here
 			const nodeList = document.querySelectorAll(
-				`img[alt='Image result for ${searchTerm}']`,
+				`img[alt='Image result for ${searchTerm}']`
 			);
 
 			let x = [];
@@ -92,12 +92,12 @@ module.exports = class Scraperizer {
 	 * @param {string} [options.type] either "list" or "one"
 	 * @param {boolean} [options.includeBase64] option to include base-64 strings in results
 	 * @param {boolean} [options.preferNonBase64] if list === 'one', try to return non base-64 string and fallback to base-64 otherwise. Future feature, I'm cool with not having this rn.
-	 * @returns {string|string[]} either a url string or an array of url strings
+	 * @returns {Promise<string|string[]>} a promise that resolves to either a url string or an array of url strings
 	 */
 	async scrape({
 		type = "one",
 		includeBase64 = true,
-		preferNonBase64 = true,
+		preferNonBase64 = true
 	} = {}) {
 		const urlList = await this.gather();
 
@@ -113,7 +113,7 @@ module.exports = class Scraperizer {
 			return filteredList[this.randomNum(filteredList.length)];
 		} else {
 			throw new Error(
-				"options.type param for 'Scraperizer.scrape' can only be 'list', 'one', or null",
+				"options.type param for 'Scraperizer.scrape' can only be 'list', 'one', or null"
 			);
 		}
 	}
