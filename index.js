@@ -1,12 +1,26 @@
 const puppeteer = require("puppeteer");
 
 module.exports = class Scraperizer {
+	/**
+	 *
+	 * @param {string} searchTerm string to search goog images by
+	 */
 	constructor(searchTerm) {
+		if (!searchTerm) {
+			throw new Error("Must initialize with a search term");
+		}
+
 		this.searchTerm = searchTerm;
 	}
 
-	get randomImgNum() {
-		return Math.floor(Math.random() * 10) + 2;
+	/**
+	 *
+	 * @param {number} max
+	 * @param {number} [offset]
+	 * @returns {number} a random num given the params
+	 */
+	randomNum(max, offset = 0) {
+		return Math.floor(Math.random() * max) + offset;
 	}
 
 	get url() {
@@ -29,9 +43,9 @@ module.exports = class Scraperizer {
 
 		// Clicking on a random image to expand it
 		// need to do this to get full size image and non-base-64 src
-		await page.click(
-			`#rg_s > div:nth-child(${this.randomImgNum}) > a.rg_l`,
-		);
+		const n = this.randomNum(10, 2);
+
+		await page.click(`#rg_s > div:nth-child(${n}) > a.rg_l`);
 
 		// Waiting for click animation to resolve before evaluating
 		await page.waitFor(500);
@@ -58,28 +72,43 @@ module.exports = class Scraperizer {
 
 	/**
 	 *
-	 * @param {string[]} srcList an array of scraped url img srcs
-	 * @returns {string[]} a list of img urls
-	 * @private
+	 * @param {string[]} urlList self-explanatory
+	 * @param {boolean} [includeBase64] option to include base-64 strings in results
 	 */
-	filter(srcList) {
-		return srcList.filter(src => Boolean(src) && !src.includes("base64"));
+	filterList(urlList, includeBase64) {
+		// ternaries are for savages
+		if (includeBase64) {
+			return urlList.filter(Boolean);
+		}
+
+		return res.filter(x => Boolean(x) && !x.includes("base64"));
 	}
 
 	/**
 	 *
 	 * @param {Object} options options to set
-	 * @param {string} options.type either "list" or "one"
+	 * @param {string} [options.type] either "list" or "one"
+	 * @param {boolean} [options.includeBase64] option to include base-64 strings in results
+	 * @param {boolean} [options.preferNonBase64] if list === 'one', try to return non base-64 string and fallback to base-64 otherwise. Future feature, I'm cool with not having this rn.
 	 * @returns {string|string[]} either a url string or an array of url strings
 	 */
-	async scrape(options = { type: "one" }) {
-		const res = await this.gather();
-		const list = this.filter(res);
+	async scrape({
+		type = "one",
+		includeBase64 = true,
+		preferNonBase64 = true,
+	} = {}) {
+		const urlList = await this.gather();
 
-		if (options.type === "list") {
-			return list;
-		} else if (options.type === "one") {
-			return list[0];
+		if (!urlList.length) {
+			throw new Error("No images found.");
+		}
+
+		const filteredList = this.filterList(urlList, includeBase64);
+
+		if (type === "list") {
+			return filteredList;
+		} else if (type === "one") {
+			return filteredList[this.randomNum(filteredList.length)];
 		} else {
 			throw new Error(
 				"options.type param for 'Scraperizer.scrape' can only be 'list', 'one', or null",
