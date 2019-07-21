@@ -1,6 +1,6 @@
 {
 	"name": "@dbrudner/goog-web-scraper",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "scraping images off the goog. Highly classified shit.",
 	"main": "index.js",
 	"scripts": {
