@@ -5,6 +5,7 @@ module.exports = class Scraperizer {
 	 *
 	 * @param {string} searchTerm string to search goog images by
 	 * @param {Object} [puppeteerSettings] object of puppeteer settings
+	 * @constructor
 	 */
 	constructor(searchTerm, puppeteerSettings = {}) {
 		if (!searchTerm) {
@@ -20,6 +21,7 @@ module.exports = class Scraperizer {
 	 * @param {number} max
 	 * @param {number} [offset]
 	 * @returns {number} a random num given the params
+	 * @private
 	 */
 	randomNum(max, offset = 0) {
 		return Math.floor(Math.random() * max) + offset;
@@ -76,6 +78,7 @@ module.exports = class Scraperizer {
 	 *
 	 * @param {string[]} urlList self-explanatory
 	 * @param {boolean} [includeBase64] option to include base-64 strings in results
+	 * @private
 	 */
 	filterList(urlList, includeBase64) {
 		// ternaries are for savages
