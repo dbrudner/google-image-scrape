@@ -4,13 +4,15 @@ module.exports = class Scraperizer {
 	/**
 	 *
 	 * @param {string} searchTerm string to search goog images by
+	 * @param {Object} [puppeteerSettings] object of puppeteer settings
 	 */
-	constructor(searchTerm) {
+	constructor(searchTerm, puppeteerSettings = {}) {
 		if (!searchTerm) {
 			throw new Error("Must initialize with a search term");
 		}
 
 		this.searchTerm = searchTerm;
+		this.puppeteerSettings = puppeteerSettings;
 	}
 
 	/**
@@ -36,7 +38,7 @@ module.exports = class Scraperizer {
 	 * @private
 	 */
 	async gather() {
-		const browser = await puppeteer.launch();
+		const browser = await puppeteer.launch(this.puppeteerSettings);
 		const page = await browser.newPage();
 
 		await page.goto(this.url);
